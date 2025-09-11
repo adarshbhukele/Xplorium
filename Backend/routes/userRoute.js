@@ -1,0 +1,43 @@
+
+import express from "express";
+import multer from "multer";
+import {
+    Login,
+    Register,
+    bookmark,
+    follow,
+    getMyProfile,
+    getOtherUsers,
+    logout,
+    unfollow,
+    updateProfile,
+    getFollowingUsers,
+    getBookmarkedPosts
+} from "../controllers/userController.js";
+import isAuthenticated from "../config/auth.js";
+
+const router = express.Router();
+
+// Multer config (store files in memory)
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
+router.route("/register").post(Register);
+router.route("/login").post(Login);
+router.route("/logout").get(logout);
+router.route("/bookmark/:id").put(isAuthenticated, bookmark);
+router.route("/profile/:id").get(isAuthenticated, getMyProfile);
+router.route("/otheruser/:id").get(isAuthenticated, getOtherUsers);
+router.route("/follow/:id").post(isAuthenticated, follow);
+router.route("/unfollow/:id").post(isAuthenticated, unfollow);
+router.route("/following/:id").get(isAuthenticated, getFollowingUsers);
+router.get("/bookmarks", isAuthenticated, getBookmarkedPosts);
+
+// profile update with file upload
+router.route("/update/:id").put(
+    isAuthenticated,
+    upload.fields([{ name: "profilePic" }, { name: "bannerPic" }]),
+    updateProfile
+);
+
+export default router;
