@@ -1,5 +1,3 @@
-
-
 import { UserPost } from "../models/userPostSchema.js";
 import { User } from "../models/userSchema.js";
 
@@ -14,14 +12,15 @@ export const createUserPost = async (req, res) => {
 
     // Get uploaded files from Multer
     const files = req.files || [];
-    const imageURLs = files.map(file => `http://localhost:8080/uploads/${file.filename}`);
+    // Save only the filename in DB
+    const imageFilenames = files.map(file => file.filename);
 
-    if (!description && imageURLs.length === 0)
+    if (!description && imageFilenames.length === 0)
       return res.status(400).json({ success: false, message: "Post cannot be empty" });
 
     const newPost = new UserPost({
       description,
-      images: imageURLs,
+      images: imageFilenames,
       userId: id,
     });
 
@@ -190,14 +189,7 @@ export const getAllPosts = async (req, res) => {
     // Prepend full URL for each image
     const postsWithFullImages = posts.map(post => ({
       ...post._doc,
-      images: post.images.map(img => {
-        // If your createUserPost already prepends http://localhost:8080/uploads/, skip this line
-        // Otherwise, make sure full path is here
-        if (!img.startsWith("http")) {
-          return `http://localhost:8080/uploads/posts/${img}`;
-        }
-        return img;
-      })
+      images: post.images.map(img => `http://localhost:8080/uploads/posts/${img}`)
     }));
 
     res.status(200).json({ success: true, posts: postsWithFullImages });

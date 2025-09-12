@@ -111,63 +111,65 @@ const CreatePost = () => {
   return (
     <div className="w-full">
       {isCreatingPost ? (
-        <div className="p-4 border-b border-gray-300">
+        <div className="p-6 border-b border-gray-300 bg-white rounded-2xl shadow-lg max-w-2xl mx-auto mt-4">
           {/* Back button */}
-          <div className="flex items-center mb-3">
+          <div className="flex items-center mb-4">
             <button
               onClick={() => dispatch(setIsCreatingPost(false))}
-              className="flex items-center cursor-pointer"
+              className="flex items-center text-gray-600 hover:text-blue-600 font-medium transition"
             >
               <IoArrowBack size={22} className="mr-1" /> Back
             </button>
           </div>
 
           {/* Input field */}
-          <div className="flex items-center">
-            <Avatar src={user?.profilePic} size="40" className="rounded-full" />
-            <input
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="w-full min-h-[100px]  outline-none border-none text-xl ml-2"
-              type="text"
-              placeholder="What's happening?"
-            />
-    
-            <input
-              type="file"
-              id="imageUpload"
-              accept="image/*"
-              multiple
-              hidden
-              onChange={handleImagesChange}
-            />
-            <label htmlFor="imageUpload" className="ml-2 cursor-pointer">
-              <CiImageOn size="24px" />
-            </label>
-
-            <button
-              onClick={submitHandler}
-              className="bg-[#1D9BF0] px-4 py-1 text-lg text-white rounded-full ml-2"
-            >
-              Post
-            </button>
+          <div className="flex items-start gap-3">
+            <Avatar src={user?.profilePic} size="44" className="rounded-full" />
+            <div className="flex-1">
+              <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className="w-full min-h-[80px] resize-none outline-none border border-gray-200 rounded-xl px-4 py-3 text-lg bg-gray-50 focus:bg-white focus:border-blue-400 transition scrollbar-none"
+                placeholder="What's happening?"
+                style={{ scrollbarWidth: 'none' }}
+              />
+              <div className="flex items-center mt-2 gap-2">
+                <input
+                  type="file"
+                  id="imageUpload"
+                  accept="image/*"
+                  multiple
+                  hidden
+                  onChange={handleImagesChange}
+                />
+                <label htmlFor="imageUpload" className="cursor-pointer text-blue-500 hover:text-blue-700">
+                  <CiImageOn size="26px" />
+                </label>
+                <button
+                  onClick={submitHandler}
+                  className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 px-6 py-2 text-white rounded-full font-semibold shadow hover:from-blue-600 hover:to-pink-600 transition-all"
+                >
+                  Post
+                </button>
+              </div>
+            </div>
           </div>
 
           {/* Image previews */}
           {imagePreviews.length > 0 && (
-            <div className="mt-3 grid grid-cols-3 gap-2">
+            <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-3">
               {imagePreviews.map((src, index) => (
-                <div key={index} className="relative">
+                <div key={index} className="relative group">
                   <img
                     src={src}
                     alt="Preview"
-                    className="w-full h-32 object-cover rounded-lg"
+                    className="w-full h-32 object-cover rounded-lg border border-gray-200 shadow group-hover:opacity-80 transition"
                   />
                   <button
                     onClick={() => removeImage(index)}
-                    className="absolute top-1 right-1 bg-black bg-opacity-50 text-white px-1 py-0.5 text-xs rounded"
+                    className="absolute top-2 right-2 bg-black bg-opacity-60 text-white px-2 py-1 text-xs rounded-full opacity-0 group-hover:opacity-100 transition"
                   >
-                    X
+                    ✕
                   </button>
                 </div>
               ))}
@@ -177,43 +179,43 @@ const CreatePost = () => {
       ) : (
         <>
           {/* Tabs */}
-          <div className="flex items-center justify-evenly border-b border-gray-200">
+          <div className="flex items-center justify-evenly border-b border-gray-200 bg-white rounded-2xl shadow mb-4">
             <div
               onClick={() => dispatch(getIsActive(true))}
-              className={`${
+              className={`$${
                 isActive
-                  ? "border-b-4 border-blue-600"
+                  ? "border-b-4 border-blue-600 bg-blue-50"
                   : "border-b-4 border-transparent"
-              } cursor-pointer hover:bg-gray-200 w-full text-center px-4 py-3`}
+              } cursor-pointer hover:bg-blue-100 w-full text-center px-4 py-3 rounded-t-2xl transition`}
             >
-              <h1 className="font-semibold text-gray-600 text-lg">For You</h1>
+              <h1 className="font-semibold text-gray-700 text-lg">For You</h1>
             </div>
             <div
               onClick={() => dispatch(getIsActive(false))}
-              className={`${
+              className={`$${
                 !isActive
-                  ? "border-b-4 border-blue-600"
+                  ? "border-b-4 border-blue-600 bg-blue-50"
                   : "border-b-4 border-transparent"
-              } cursor-pointer hover:bg-gray-200 w-full text-center px-4 py-3`}
+              } cursor-pointer hover:bg-blue-100 w-full text-center px-4 py-3 rounded-t-2xl transition`}
             >
-              <h1 className="font-semibold text-gray-600 text-lg">Following</h1>
+              <h1 className="font-semibold text-gray-700 text-lg">Following</h1>
             </div>
           </div>
 
           {/* Following Users */}
           {!isActive && (
-            <div className="p-4">
+            <div className="p-4 bg-white rounded-2xl shadow">
               {followingUsers?.length > 0 ? (
                 followingUsers.map((followingUser) => (
                   <Link key={followingUser._id} to={`/profile/${followingUser._id}`}>
-                    <div className="flex items-center p-2 border-b border-gray-200 cursor-pointer hover:bg-gray-100">
+                    <div className="flex items-center p-2 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition">
                       <Avatar
                         src={followingUser.profilePic}
                         size="40"
                         round={true}
                       />
-                      <div className="ml-2">
-                        <h1 className="font-bold">{followingUser.name}</h1>
+                      <div className="ml-3">
+                        <h1 className="font-bold text-gray-800">{followingUser.name}</h1>
                         <p className="text-sm text-gray-500">
                           @{followingUser.username}
                         </p>

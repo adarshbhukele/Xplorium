@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { CiSearch } from "react-icons/ci";
 import Avatar from "react-avatar";
@@ -21,14 +20,13 @@ const RightSidebar = ({ otherUsers }) => {
   }, [searchTerm, otherUsers]);
 
   return (
-    <div className="w-[25%] h-[90vh]">
+    <div className="w-[25%] h-[90vh] flex flex-col">
       {/* Search bar */}
-      <div className="flex items-center px-4 py-2 mb-4 rounded-full bg-gray-100 
-        shadow-[inset_6px_6px_12px_#d1d5db,inset_-6px_-6px_12px_#ffffff ] h-[8%] ">
-        <CiSearch size="20px" className="text-gray-500" />
+      <div className="flex items-center px-4 py-2 mb-4 rounded-full bg-white shadow-md border border-gray-200 h-[8%]">
+        <CiSearch size="20px" className="text-gray-400" />
         <input
           type="text"
-          className="bg-transparent outline-none px-2 w-full text-gray-700 placeholder-gray-400"
+          className="bg-transparent outline-none px-2 w-full text-gray-700 placeholder-gray-400 text-base"
           placeholder="Search users..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
@@ -36,39 +34,31 @@ const RightSidebar = ({ otherUsers }) => {
       </div>
 
       {/* Suggestions */}
-      <div className="p-4 bg-gray-100 rounded-2xl 
-        shadow-[8px_8px_16px_#d1d5db,-8px_-8px_16px_#ffffff] overflow-y-scroll [&::-webkit-scrollbar]:hidden h-[90%]">
-        <h1 className="font-bold text-lg mb-3 text-gray-700">Suggestions</h1>
+      <div className="flex-1 p-4 bg-gradient-to-br from-white via-blue-50 to-purple-50 rounded-3xl shadow-lg border border-gray-200 overflow-y-scroll [&::-webkit-scrollbar]:hidden">
+        <h1 className="font-bold text-xl mb-4 text-gray-700">Suggestions</h1>
 
         {filteredUsers?.length > 0 ? (
           filteredUsers.map((user) => (
             <div
               key={user?._id}
-              className="flex items-center justify-between my-3 p-2 rounded-xl 
-              bg-gray-100 shadow-[6px_6px_12px_#d1d5db,-6px_-6px_12px_#ffffff]
-              hover:shadow-[inset_6px_6px_12px_#d1d5db,inset_-6px_-6px_12px_#ffffff] 
-              transition-all duration-300"
+              className="flex items-center justify-between my-3 p-3 rounded-2xl bg-white shadow-md border border-gray-100 hover:bg-blue-50 hover:shadow-lg transition-all duration-200"
             >
               <div className="flex items-center">
                 <Avatar
                   src={user?.profilePic || undefined}
                   name={user?.name}
-                  size="40"
+                  size="44"
                   round={true}
-                  className="shadow-md"
+                  className="shadow"
                 />
                 <div className="ml-3">
-                  <h1 className="font-semibold text-gray-800">{user?.name}</h1>
-                  <p className="text-sm text-gray-500">{`@${user?.username}`}</p>
+                  <h1 className="font-semibold text-gray-800 text-base">{user?.name}</h1>
+                  <p className="text-xs text-gray-500">@{user?.username}</p>
                 </div>
               </div>
               <Link to={`/profile/${user?._id}`}>
                 <button
-                  className="px-4 py-1 rounded-full font-medium text-gray-700 
-                  bg-blue-400 shadow-[6px_6px_12px_#d1d5db,-6px_-6px_12px_#ffffff]
-                  hover:shadow-[inset_6px_6px_12px_#d1d5db,inset_-6px_-6px_12px_#ffffff] 
-                  active:shadow-[inset_6px_6px_12px_#d1d5db,inset_-6px_-6px_12px_#ffffff]
-                  transition-all duration-300 cursor-pointer"
+                  className="px-5 py-1 rounded-full font-semibold text-white bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 shadow hover:from-blue-600 hover:to-pink-600 transition-all duration-200 cursor-pointer text-sm"
                 >
                   Profile
                 </button>

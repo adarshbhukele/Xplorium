@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { FaHome, FaUser, FaBookmark } from "react-icons/fa";
 import { IoMdLogOut } from "react-icons/io";
@@ -29,76 +28,57 @@ const LeftSidebar = () => {
   };
 
   return (
-    <div className="w-[20%] ">
-      <div className="flex flex-col items-start p-4 rounded-2xl bg-gray-100 
-        shadow-[8px_8px_16px_#d1d5db,-8px_-8px_16px_#ffffff] h-[90vh]">
-
+    <div className="w-[20%]">
+      <div className="flex flex-col items-start p-5 rounded-3xl bg-gradient-to-br from-white via-blue-50 to-purple-50 shadow-lg border border-gray-200 h-[90vh]">
         {/* Logo */}
-        <div className="mb-6 cursor-pointer">
+        <div className="mb-8 w-full flex justify-center">
           <img
-            className="ml-3 drop-shadow-md"
-            width={"130px"}
-            src="../public/xploeium--logo.png"
+            className="drop-shadow-md rounded-xl"
+            width={120}
+            src="/xploeium--logo.png"
             alt="Xplorium"
           />
         </div>
 
         {/* Navigation Links */}
-        <div className="w-full space-y-3">
+        <div className="w-full space-y-4">
           <Link
             to="/"
-            className="flex items-center px-4 py-3 rounded-full bg-gray-100
-            shadow-[6px_6px_12px_#d1d5db,-6px_-6px_12px_#ffffff]
-            hover:shadow-[inset_6px_6px_12px_#d1d5db,inset_-6px_-6px_12px_#ffffff]
-            transition-all duration-300 cursor-pointer"
+            className="flex items-center px-5 py-3 rounded-2xl bg-white shadow-md border border-gray-100 hover:bg-blue-50 hover:shadow-lg transition-all duration-200 cursor-pointer"
           >
             <FaHome size="22px" className="text-[#7638FA]" />
-            <h1 className="font-semibold text-md ml-3">Home</h1>
+            <h1 className="font-semibold text-base ml-3">Home</h1>
           </Link>
 
           <Link
             to={`/profile/${user?._id}`}
-            className="flex items-center px-4 py-3 rounded-full bg-gray-100
-            shadow-[6px_6px_12px_#d1d5db,-6px_-6px_12px_#ffffff]
-            hover:shadow-[inset_6px_6px_12px_#d1d5db,inset_-6px_-6px_12px_#ffffff]
-            transition-all duration-300 cursor-pointer"
+            className="flex items-center px-5 py-3 rounded-2xl bg-white shadow-md border border-gray-100 hover:bg-purple-50 hover:shadow-lg transition-all duration-200 cursor-pointer"
           >
             <FaUser size="22px" className="text-[#D300C5]" />
-            <h1 className="font-semibold text-md ml-3">Profile</h1>
+            <h1 className="font-semibold text-base ml-3">Profile</h1>
           </Link>
 
           <Link
-          to="/bookmarks"
-            className="flex items-center px-4 py-3 rounded-full bg-gray-100
-            shadow-[6px_6px_12px_#d1d5db,-6px_-6px_12px_#ffffff]
-            hover:shadow-[inset_6px_6px_12px_#d1d5db,inset_-6px_-6px_12px_#ffffff]
-            transition-all duration-300 cursor-pointer"
+            to="/bookmarks"
+            className="flex items-center px-5 py-3 rounded-2xl bg-white shadow-md border border-gray-100 hover:bg-pink-50 hover:shadow-lg transition-all duration-200 cursor-pointer"
           >
             <FaBookmark size="22px" className="text-[#FF0069]" />
-            <h1 className="font-semibold text-md ml-3">Bookmarks</h1>
+            <h1 className="font-semibold text-base ml-3">Bookmarks</h1>
           </Link>
 
           <div
             onClick={logoutHandler}
-            className="flex items-center px-4 py-3 rounded-full bg-gray-100
-            shadow-[6px_6px_12px_#d1d5db,-6px_-6px_12px_#ffffff]
-            hover:shadow-[inset_6px_6px_12px_#d1d5db,inset_-6px_-6px_12px_#ffffff]
-            transition-all duration-300 cursor-pointer"
+            className="flex items-center px-5 py-3 rounded-2xl bg-white shadow-md border border-gray-100 hover:bg-orange-50 hover:shadow-lg transition-all duration-200 cursor-pointer"
           >
             <IoMdLogOut size="22px" className="text-[#FF7A00]" />
-            <h1 className="font-semibold text-md ml-3">Logout</h1>
+            <h1 className="font-semibold text-base ml-3">Logout</h1>
           </div>
         </div>
 
         {/* Post Button */}
         <button
           onClick={() => dispatch(setIsCreatingPost(true))}
-          className="mt-6 w-full px-5 py-3 rounded-full 
-          bg-blue-400 font-bold text-gray-700
-          shadow-[6px_6px_12px_#d1d5db,-6px_-6px_12px_#ffffff]
-          hover:shadow-[inset_6px_6px_12px_#d1d5db,inset_-6px_-6px_12px_#ffffff]
-          active:shadow-[inset_6px_6px_12px_#d1d5db,inset_-6px_-6px_12px_#ffffff]
-          transition-all duration-300 cursor-pointer"
+          className="mt-8 w-full px-6 py-3 rounded-2xl bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 font-bold text-white text-lg shadow-md hover:from-blue-600 hover:to-pink-600 transition-all duration-200 cursor-pointer"
         >
           Post
         </button>
