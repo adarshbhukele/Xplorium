@@ -28,8 +28,8 @@ const Home = () => {
 
 
   return (
-    <div className='flex justify-between py-[3vh] w-[80%] mx-auto '>
-      <LeftSidebar />
+    <div className='flex justify-between py-[3vh] w-[95%]  mx-auto '>
+      <LeftSidebar  />
          
            <Outlet />
       <RightSidebar otherUsers={otherUsers} />

@@ -85,7 +85,7 @@ const Profile = () => {
   return (
     <div className="w-full max-w-2xl mx-auto h-[90vh] overflow-y-scroll p-0 bg-white rounded-3xl shadow-lg border border-gray-200 [&::-webkit-scrollbar]:hidden">
       {/* Banner */}
-      <div className="relative w-full h-56 bg-gradient-to-br from-blue-200 via-purple-200 to-pink-200 rounded-t-3xl overflow-hidden">
+      <div className="relative w-full h-56 bg-gradient-to-br from-blue-200 via-purple-200 to-pink-200 rounded-t-3xl ">
         <img
           src={profile?.bannerPic || "/xploriumBG.png"}
           alt="banner"
@@ -94,12 +94,12 @@ const Profile = () => {
         />
         {/* Avatar - always in front and centered */}
         <div className="absolute left-1/2 bottom-0 transform -translate-x-1/2 translate-y-1/2 z-30 flex justify-center w-full">
-          <div className="flex justify-center w-full">
+          <div className="flex  justify-center w-full">
             <Avatar
               src={profile?.profilePic}
               size="150"
               round
-              className="shadow-2xl border-8 border-white bg-white"
+              className="shadow-2xl border-2 border-white bg-white"
               onError={e => { e.target.onerror = null; e.target.src = ""; }}
             />
           </div>
