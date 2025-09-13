@@ -28,7 +28,7 @@ const Home = () => {
 
 
   return (
-    <div className='flex justify-between py-[3vh] w-[90%] mx-auto '>
+    <div className='flex justify-between py-[3vh] w-[80%] mx-auto '>
       <LeftSidebar />
          
            <Outlet />

@@ -94,7 +94,7 @@ const Profile = () => {
         />
         {/* Avatar - always in front and centered */}
         <div className="absolute left-1/2 bottom-0 transform -translate-x-1/2 translate-y-1/2 z-30 flex justify-center w-full">
-          <div className="flex justify-center w-full">
+          <div className="flex  justify-center w-full">
             <Avatar
               src={profile?.profilePic}
               size="150"
