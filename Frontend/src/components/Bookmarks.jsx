@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { USER_API_END_POINT, Xplorium_API_END_POINT } from "../utils/constant";
+import { USER_API_END_POINT } from "../utils/constant";
 import Xplorium from "./Xplorium";
 import toast from "react-hot-toast";
 
 const Bookmarks = () => {
   const [bookmarkedPosts, setBookmarkedPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const handleBookmarksUpdate = (updatedBookmarks) => {
+    setBookmarkedPosts(updatedBookmarks || []);
+  };
 
   useEffect(() => {
     const fetchBookmarks = async () => {
@@ -29,7 +33,6 @@ const Bookmarks = () => {
     fetchBookmarks();
   }, []);
 
-
   return (
     <div className="w-[50%] border-l border-r border-gray-200 bg-gray-100 
       shadow-[inset_8px_8px_16px_#d1d5db,inset_-8px_-8px_16px_#ffffff] rounded-2xl 
@@ -43,7 +46,11 @@ const Bookmarks = () => {
         <p className="text-center text-gray-500 p-4">Loading bookmarks...</p>
       ) : bookmarkedPosts.length > 0 ? (
         bookmarkedPosts.map((post) => (
-          <Xplorium key={post._id} Xplorium={post} />
+          <Xplorium
+            key={post._id}
+            Xplorium={post}
+            onBookmarksUpdate={setBookmarkedPosts}
+          />
         ))
       ) : (
         <p className="text-center text-gray-400 p-4">No bookmarks yet</p>

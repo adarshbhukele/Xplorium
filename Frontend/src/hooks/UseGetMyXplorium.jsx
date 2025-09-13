@@ -1,4 +1,3 @@
-
 import axios from "axios";
 import { Xplorium_API_END_POINT } from "../utils/constant";
 import { useEffect } from "react";
@@ -10,22 +9,25 @@ const useGetMyXplorium = (id) => {
     const { refresh, isActive } = useSelector(store => store.Xplorium);
 
     const fetchMyXplorium = async () => {
+        if (!id) return;
         try {
             const res = await axios.get(`${Xplorium_API_END_POINT}/allUserPosts/${id}`, {
                 withCredentials: true
             });
-            console.log("All User Posts:", res.data);
-            dispatch(getAllXploriums(res.data.UserPosts)); 
+            if (res.data?.posts) {
+                dispatch(getAllXploriums(res.data.posts));
+            } else {
+                dispatch(getAllXploriums([]));
+                console.warn("No posts found for user:", id);
+            }
         } catch (error) {
+            dispatch(getAllXploriums([]));
             console.error("Fetch My Xplorium Error:", error);
         }
     };
 
-    // useEffect(() => {
-    //         fetchMyXplorium();
-    // }, [isActive, refresh]);
     useEffect(() => {
-    if (!id) return; 
+    if (!id) return; // 🔑 don’t fire until id is available
     fetchMyXplorium();
   }, [id, isActive, refresh]);
 

@@ -6,19 +6,25 @@ import { getMyProfile } from "../redux/userSlice";
 
 const UseGetProfile = (id) => {
     const dispatch = useDispatch();
-    useEffect(()=>{
+    useEffect(() => {
         const fetchMyProfile = async () => {
+            if (!id) return; // Don't fetch if no id
             try {
-                const res = await axios.get(`${USER_API_END_POINT}/profile/${id}`,{
-                    withCredentials:true
+                const res = await axios.get(`${USER_API_END_POINT}/profile/${id}`, {
+                    withCredentials: true
                 });
-                console.log(res);
-                dispatch(getMyProfile(res.data.user));
+                if (res.data?.user) {
+                    dispatch(getMyProfile(res.data.user));
+                } else {
+                    dispatch(getMyProfile(null));
+                    console.warn("No user found for profile:", id);
+                }
             } catch (error) {
-                console.log(error);
+                dispatch(getMyProfile(null));
+                console.error("Fetch profile error:", error);
             }
-        }
+        };
         fetchMyProfile();
-    },[id]);
+    }, [id, dispatch]);
 };
 export default UseGetProfile;

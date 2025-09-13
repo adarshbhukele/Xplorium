@@ -39,9 +39,9 @@ const userSchema = new mongoose.Schema({
         type:Array,
         default:[]
     }, 
-    bookmarks:{
-        type:Array,
-        default:[]
-    }
+    bookmarks: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "UserPost"
+}]
 },{timestamps:true});
 export const User = mongoose.model("User", userSchema);
