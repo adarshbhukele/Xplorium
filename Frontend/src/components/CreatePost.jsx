@@ -178,29 +178,31 @@ const CreatePost = () => {
         </div>
       ) : (
         <>
-          {/* Tabs */}
-          <div className="flex items-center justify-evenly border-b border-gray-200 bg-white rounded-2xl shadow mb-4">
-            <div
-              onClick={() => dispatch(getIsActive(true))}
-              className={`$${
-                isActive
-                  ? "border-b-4 border-blue-600 bg-blue-50"
-                  : "border-b-4 border-transparent"
-              } cursor-pointer hover:bg-blue-100 w-full text-center px-4 py-3 rounded-t-2xl transition`}
-            >
-              <h1 className="font-semibold text-gray-700 text-lg">For You</h1>
-            </div>
-            <div
-              onClick={() => dispatch(getIsActive(false))}
-              className={`$${
-                !isActive
-                  ? "border-b-4 border-blue-600 bg-blue-50"
-                  : "border-b-4 border-transparent"
-              } cursor-pointer hover:bg-blue-100 w-full text-center px-4 py-3 rounded-t-2xl transition`}
-            >
-              <h1 className="font-semibold text-gray-700 text-lg">Following</h1>
-            </div>
-          </div>
+          {/* For You and Following Tabs with better UI */}
+       {/* For You and Following Tabs with better UI */}
+<div className="flex items-center justify-center gap-4 mb-4">
+  <button
+    onClick={() => dispatch(getIsActive(true))}
+    className={`px-6 py-2 rounded-full font-semibold transition-all duration-200 shadow ${
+      isActive
+        ? "bg-blue-600 text-white scale-105"
+        : "bg-gray-100 text-blue-600 hover:bg-blue-50"
+    }`}
+  >
+    For You
+  </button>
+  <button
+    onClick={() => dispatch(getIsActive(false))}
+    className={`px-6 py-2 rounded-full  font-semibold transition-all duration-200 shadow ${
+      !isActive
+        ? "bg-blue-600 text-white scale-105"
+        : "bg-gray-100 text-blue-600 hover:bg-blue-50"
+    }`}
+  >
+    Following
+  </button>
+</div>
+
 
           {/* Following Users */}
           {!isActive && (

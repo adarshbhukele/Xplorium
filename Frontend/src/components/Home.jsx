@@ -1,4 +1,4 @@
-import React,{useEffect} from 'react'
+import React, { useEffect } from 'react'
 import LeftSidebar from './LeftSidebar'
 import RightSidebar from './RightSidebar'
 import { Outlet, useNavigate } from "react-router-dom";
@@ -7,23 +7,24 @@ import { useSelector } from "react-redux";
 import UseGetMyXplorium from '../hooks/UseGetMyXplorium';
 
 
+
 const Home = () => {
   const { user, otherUsers } = useSelector(store => store.user);
   const navigate = useNavigate();
 
-  useEffect(()=>{
+  useEffect(() => {
     if (!user) {
       navigate("/login");
     }
-  },[user, navigate]);
-  // custom Hook
-  if (user?._id) {
-  UseOtherUsers(user._id);
-  UseGetMyXplorium(user._id);
-}
-if(!user){
-  return <div>Loading...</div>
-}
+  }, [user, navigate]);
+
+  // Call custom hooks at the top level, not inside if/else or useEffect
+  UseOtherUsers(user?._id);
+  UseGetMyXplorium(user?._id);
+
+  if (!user) {
+    return <div>Loading...</div>
+  }
 
 
   return (
@@ -37,4 +38,4 @@ if(!user){
   )
 }
 
-export default Home
+export default Home;

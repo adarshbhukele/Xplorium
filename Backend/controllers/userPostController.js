@@ -7,12 +7,9 @@ import { User } from "../models/userSchema.js";
 export const createUserPost = async (req, res) => {
   try {
     const { description, id } = req.body;
-
     if (!id) return res.status(400).json({ success: false, message: "User ID is required" });
 
-    // Get uploaded files from Multer
     const files = req.files || [];
-    // Save only the filename in DB
     const imageFilenames = files.map(file => file.filename);
 
     if (!description && imageFilenames.length === 0)
@@ -29,14 +26,23 @@ export const createUserPost = async (req, res) => {
     const populatedPost = await UserPost.findById(newPost._id)
       .populate("userId", "name username profilePic");
 
+    if (!populatedPost) {
+      return res.status(500).json({ success: false, message: "Failed to populate post after creation" });
+    }
+
+    const postWithFullImages = {
+      ...populatedPost._doc,
+      images: populatedPost.images.map(img => `http://localhost:8080/uploads/posts/${img}`)
+    };
+
     return res.status(201).json({
       success: true,
       message: "Post created successfully",
-      post: populatedPost,
+      post: postWithFullImages,
     });
   } catch (error) {
     console.error("Error in createUserPost:", error);
-    res.status(500).json({ success: false, message: "Failed to create post" });
+    return res.status(500).json({ success: false, message: "Failed to create post", error: error.message });
   }
 };
 // ===============================
@@ -45,6 +51,7 @@ export const createUserPost = async (req, res) => {
 export const deleteUserPost = async (req, res) => {
   try {
     const { id } = req.params;
+    if (!id) return res.status(400).json({ success: false, message: "Post ID is required" });
     const deleted = await UserPost.findByIdAndDelete(id);
 
     if (!deleted) {
@@ -54,18 +61,21 @@ export const deleteUserPost = async (req, res) => {
     return res.status(200).json({ success: true, message: "Post deleted successfully." });
   } catch (error) {
     console.error("Error in deleteUserPost:", error);
-    res.status(500).json({ success: false, message: "Failed to delete post" });
+    return res.status(500).json({ success: false, message: "Failed to delete post", error: error.message });
   }
 };
 
 // ===============================
 // ✅ Like or dislike a post
 // ===============================
-// ✅ Like or dislike a post
 export const likeOrDislike = async (req, res) => {
   try {
     const loggedInUserId = req.body.id;
     const postId = req.params.id;
+
+    if (!loggedInUserId || !postId) {
+      return res.status(400).json({ success: false, message: "User ID and Post ID are required" });
+    }
 
     let post = await UserPost.findById(postId);
     if (!post) return res.status(404).json({ message: "Post not found", success: false });
@@ -84,14 +94,23 @@ export const likeOrDislike = async (req, res) => {
     const updatedPost = await UserPost.findById(postId)
       .populate("userId", "name username profilePic");
 
+    if (!updatedPost) {
+      return res.status(500).json({ success: false, message: "Failed to update post after like/dislike" });
+    }
+
+    const postWithFullImages = {
+      ...updatedPost._doc,
+      images: updatedPost.images.map(img => `http://localhost:8080/uploads/posts/${img}`)
+    };
+
     return res.status(200).json({
       message: `Post ${action}`,
       success: true,
-      post: updatedPost,
+      post: postWithFullImages,
     });
   } catch (error) {
     console.error("Error in likeOrDislike:", error);
-    res.status(500).json({ success: false, message: "Failed to like/dislike post" });
+    return res.status(500).json({ success: false, message: "Failed to like/dislike post", error: error.message });
   }
 };
 
@@ -104,6 +123,10 @@ export const bookmarkOrRemove = async (req, res) => {
     const { id: loggedInUserId } = req.body;
     const { id: postId } = req.params;
 
+    if (!loggedInUserId || !postId) {
+      return res.status(400).json({ success: false, message: "User ID and Post ID are required" });
+    }
+
     const user = await User.findById(loggedInUserId);
     const post = await UserPost.findById(postId);
 
@@ -113,12 +136,10 @@ export const bookmarkOrRemove = async (req, res) => {
 
     let action;
     if (user.bookmarks.includes(postId)) {
-      // remove from both user & post
       user.bookmarks.pull(postId);
       post.bookmarks.pull(loggedInUserId);
       action = "removed from bookmarks";
     } else {
-      // add to both
       user.bookmarks.push(postId);
       post.bookmarks.push(loggedInUserId);
       action = "bookmarked";
@@ -127,18 +148,38 @@ export const bookmarkOrRemove = async (req, res) => {
     await user.save();
     await post.save();
 
+    // Fetch updated bookmarks with post details for frontend
+    const bookmarks = await UserPost.find({ _id: { $in: user.bookmarks } })
+      .populate("userId", "name username profilePic")
+      .sort({ createdAt: -1 });
+
+    const bookmarksWithFullImages = bookmarks.map(bm => ({
+      ...bm._doc,
+      images: bm.images.map(img => `http://localhost:8080/uploads/posts/${img}`)
+    }));
+
     const updatedPost = await UserPost.findById(postId)
       .populate("userId", "name username profilePic");
+
+    if (!updatedPost) {
+      return res.status(500).json({ success: false, message: "Failed to update post after bookmark/unbookmark" });
+    }
+
+    const postWithFullImages = {
+      ...updatedPost._doc,
+      images: updatedPost.images.map(img => `http://localhost:8080/uploads/posts/${img}`)
+    };
 
     return res.status(200).json({
       success: true,
       message: `Post ${action}`,
-      post: updatedPost,
+      post: postWithFullImages,
       userBookmarks: user.bookmarks,
+      bookmarks: bookmarksWithFullImages // send updated bookmarks for frontend
     });
   } catch (error) {
     console.error("Error in bookmarkOrRemove:", error);
-    res.status(500).json({ success: false, message: "Failed to bookmark/unbookmark post" });
+    return res.status(500).json({ success: false, message: "Failed to bookmark/unbookmark post", error: error.message });
   }
 };
 
@@ -149,6 +190,8 @@ export const bookmarkOrRemove = async (req, res) => {
 export const getAllUserPosts = async (req, res) => {
   try {
     const { id } = req.params;
+    if (!id) return res.status(400).json({ success: false, message: "User ID is required" });
+
     const loggedInUser = await User.findById(id);
 
     if (!loggedInUser) {
@@ -164,19 +207,22 @@ export const getAllUserPosts = async (req, res) => {
       )
     );
 
+    // Format image URLs for all posts
+    const allPosts = [...userPosts, ...followingPosts.flat()].map(post => ({
+      ...post._doc,
+      images: post.images.map(img => `http://localhost:8080/uploads/posts/${img}`)
+    }));
+
     return res.status(200).json({
       success: true,
-      posts: [...userPosts, ...followingPosts.flat()].sort((a, b) => b.createdAt - a.createdAt),
+      posts: allPosts.sort((a, b) => b.createdAt - a.createdAt),
     });
   } catch (error) {
     console.error("Error in getAllUserPosts:", error);
-    res.status(500).json({ success: false, message: "Failed to fetch posts" });
+    return res.status(500).json({ success: false, message: "Failed to fetch posts", error: error.message });
   }
 };
 
-// ===============================
-// ✅ Get all posts (feed)
-// ===============================
 // ===============================
 // ✅ Get all posts (feed)
 // ===============================
@@ -186,7 +232,6 @@ export const getAllPosts = async (req, res) => {
       .populate("userId", "name username profilePic")
       .sort({ createdAt: -1 });
 
-    // Prepend full URL for each image
     const postsWithFullImages = posts.map(post => ({
       ...post._doc,
       images: post.images.map(img => `http://localhost:8080/uploads/posts/${img}`)
@@ -195,14 +240,15 @@ export const getAllPosts = async (req, res) => {
     res.status(200).json({ success: true, posts: postsWithFullImages });
   } catch (error) {
     console.error("Error in getAllPosts:", error);
-    res.status(500).json({ success: false, message: "Failed to fetch posts" });
+    return res.status(500).json({ success: false, message: "Failed to fetch posts", error: error.message });
   }
 };
 
-
 export const getPostsByUser = async (req, res) => {
   try {
-    const { id } = req.params; // user id
+    const { id } = req.params;
+    if (!id) return res.status(400).json({ success: false, message: "User ID is required" });
+
     const userExists = await User.findById(id);
 
     if (!userExists) {
@@ -213,10 +259,16 @@ export const getPostsByUser = async (req, res) => {
       .populate("userId", "name username profilePic")
       .sort({ createdAt: -1 });
 
-    return res.status(200).json({ success: true, posts });
+    // Format image URLs for all posts
+    const postsWithFullImages = posts.map(post => ({
+      ...post._doc,
+      images: post.images.map(img => `http://localhost:8080/uploads/posts/${img}`)
+    }));
+
+    return res.status(200).json({ success: true, posts: postsWithFullImages });
   } catch (error) {
     console.error("Error in getPostsByUser:", error);
-    return res.status(500).json({ success: false, message: "Failed to fetch user posts" });
+    return res.status(500).json({ success: false, message: "Failed to fetch user posts", error: error.message });
   }
 };
 

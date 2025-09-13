@@ -86,16 +86,28 @@ const Profile = () => {
     <div className="w-full max-w-2xl mx-auto h-[90vh] overflow-y-scroll p-0 bg-white rounded-3xl shadow-lg border border-gray-200 [&::-webkit-scrollbar]:hidden">
       {/* Banner */}
       <div className="relative w-full h-56 bg-gradient-to-br from-blue-200 via-purple-200 to-pink-200 rounded-t-3xl overflow-hidden">
-        <img src={profile?.bannerPic || "/xploriumBG.png"} alt="banner"
+        <img
+          src={profile?.bannerPic || "/xploriumBG.png"}
+          alt="banner"
           className="w-full h-full object-cover object-center"
-          onError={e => e.target.src = "/xploriumBG.png"} />
-        <div className="absolute left-1/2 -bottom-20 transform -translate-x-1/2 z-20">
-          <Avatar src={profile?.profilePic} size="150" round className="shadow-2xl border-8 border-white" />
+          onError={e => { e.target.onerror = null; e.target.src = "/xploriumBG.png"; }}
+        />
+        {/* Avatar - always in front and centered */}
+        <div className="absolute left-1/2 bottom-0 transform -translate-x-1/2 translate-y-1/2 z-30 flex justify-center w-full">
+          <div className="flex justify-center w-full">
+            <Avatar
+              src={profile?.profilePic}
+              size="150"
+              round
+              className="shadow-2xl border-8 border-white bg-white"
+              onError={e => { e.target.onerror = null; e.target.src = ""; }}
+            />
+          </div>
         </div>
       </div>
 
       {/* Floating Profile Card */}
-      <div className="relative z-30 flex flex-col items-center -mt-16 mb-6 px-6">
+      <div className="relative z-20 flex flex-col items-center mt-20 mb-6 px-6">
         <div className="bg-white rounded-2xl shadow-xl border border-gray-100 px-8 py-6 w-full flex flex-col items-center">
           <h1 className="font-extrabold text-2xl text-gray-900 mb-1">{profile?.name}</h1>
           <p className="text-gray-500 text-base mb-2">@{profile?.username}</p>

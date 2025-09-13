@@ -37,11 +37,14 @@ const Xplorium = ({ Xplorium, onUpdate, onDelete }) => {
         { withCredentials: true }
       );
       // 🔹 Update frontend instantly
-      if (onUpdate) onUpdate(data.post);
-      dispatch(updateReduxXplorium(data.post));
-      toast.success(data.message);
+      if (data?.post) {
+        if (onUpdate) onUpdate(data.post);
+        dispatch(updateReduxXplorium(data.post));
+      }
+      toast.success(data?.message || "Bookmarked!");
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to bookmark post");
+      // Optionally, you can refresh bookmarks or refetch here if needed
     }
   };
 
@@ -69,7 +72,12 @@ const Xplorium = ({ Xplorium, onUpdate, onDelete }) => {
           className="cursor-pointer flex-shrink-0"
           onClick={() => navigate(`/profile/${Xplorium?.userId?._id}`)}
         >
-          <Avatar src={Xplorium?.userId?.profilePic} size="54" round={true} className="shadow-md" />
+          <Avatar
+            src={Xplorium?.userId?.profilePic}
+            size="54"
+            round={true}
+            className="shadow-md"
+          />
         </div>
 
         {/* Content */}
@@ -87,7 +95,8 @@ const Xplorium = ({ Xplorium, onUpdate, onDelete }) => {
                 className="text-gray-500 text-xs mt-0.5"
                 title={new Date(Xplorium?.createdAt).toLocaleString()}
               >
-                @{Xplorium?.userId?.username} · {timeSince(Xplorium?.createdAt)}
+                @{Xplorium?.userId?.username} ·{" "}
+                {timeSince(Xplorium?.createdAt)}
               </p>
             </div>
 
@@ -141,7 +150,9 @@ const Xplorium = ({ Xplorium, onUpdate, onDelete }) => {
             {/* Like */}
             <button
               onClick={() => likeOrDislikeHandler(Xplorium?._id)}
-              className={`flex items-center px-4 py-2 rounded-full hover:bg-pink-100 transition-all cursor-pointer active:scale-95 shadow-sm ${Xplorium?.like?.includes(user?._id) ? 'bg-pink-50' : ''}`}
+              className={`flex items-center px-4 py-2 rounded-full hover:bg-pink-100 transition-all cursor-pointer active:scale-95 shadow-sm ${
+                Xplorium?.like?.includes(user?._id) ? "bg-pink-50" : ""
+              }`}
             >
               <CiHeart
                 size="26px"
@@ -159,18 +170,20 @@ const Xplorium = ({ Xplorium, onUpdate, onDelete }) => {
             {/* Bookmark */}
             <button
               onClick={() => bookmarkHandler(Xplorium?._id)}
-              className={`flex items-center px-4 py-2 rounded-full hover:bg-yellow-100 transition-all active:scale-95 cursor-pointer shadow-sm ${Xplorium?.bookmarks?.includes(user?._id) ? 'bg-yellow-50' : ''}`}
+              className={`flex items-center px-4 py-2 rounded-full hover:bg-yellow-100 transition-all active:scale-95 cursor-pointer shadow-sm ${
+                (Xplorium?.bookmarks || []).includes(user?._id) ? "bg-yellow-50" : ""
+              }`}
             >
               <CiBookmark
                 size="26px"
                 className={`transition-colors ${
-                  Xplorium?.bookmarks?.includes(user?._id)
+                  (Xplorium?.bookmarks || []).includes(user?._id)
                     ? "text-yellow-500"
                     : "text-gray-600"
                 }`}
               />
               <span className="ml-2 text-base text-gray-700 font-medium">
-                {Xplorium?.bookmarks?.length || 0}
+                {(Xplorium?.bookmarks || []).length}
               </span>
             </button>
           </div>

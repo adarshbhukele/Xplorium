@@ -1,4 +1,3 @@
-
 import { User } from "../models/userSchema.js";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
@@ -6,18 +5,26 @@ import jwt from "jsonwebtoken";
 // Register user
 export const Register = async (req, res) => {
   try {
+    // Optional: Timeout safeguard
+    const timeout = setTimeout(() => {
+      return res.status(503).json({ message: "Request timed out", success: false });
+    }, 10000); // 10 seconds
+
     const { name, username, email, password } = req.body;
 
     if (!name || !username || !email || !password) {
+      clearTimeout(timeout);
       return res.status(401).json({ message: "All fields are required.", success: false });
     }
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
+      clearTimeout(timeout);
       return res.status(401).json({ message: "User already exists.", success: false });
     }
 
-    const hashedPassword = await bcryptjs.hash(password, 16);
+    // Reduce salt rounds for faster hashing
+    const hashedPassword = await bcryptjs.hash(password, 10);
 
     await User.create({
       name,
@@ -26,6 +33,7 @@ export const Register = async (req, res) => {
       password: hashedPassword
     });
 
+    clearTimeout(timeout);
     return res.status(201).json({
       message: "Account created successfully.",
       success: true
@@ -40,25 +48,34 @@ export const Register = async (req, res) => {
 // Login user
 export const Login = async (req, res) => {
   try {
+    // Optional: Timeout safeguard
+    const timeout = setTimeout(() => {
+      return res.status(503).json({ message: "Request timed out", success: false });
+    }, 10000); // 10 seconds
+
     const { email, password } = req.body;
 
     if (!email || !password) {
+      clearTimeout(timeout);
       return res.status(401).json({ message: "All fields are required.", success: false });
     }
 
     const user = await User.findOne({ email });
     if (!user) {
+      clearTimeout(timeout);
       return res.status(401).json({ message: "Incorrect email or password", success: false });
     }
 
     const isMatch = await bcryptjs.compare(password, user.password);
     if (!isMatch) {
+      clearTimeout(timeout);
       return res.status(401).json({ message: "Incorrect email or password", success: false });
     }
 
     const tokenData = { userId: user._id };
     const token = jwt.sign(tokenData, process.env.TOKEN_SECRET, { expiresIn: "7d" });
 
+    clearTimeout(timeout);
     return res
       .status(200)
       .cookie("token", token, { httpOnly: true, maxAge: 7 * 24 * 60 * 60 * 1000 })
