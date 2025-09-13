@@ -36,7 +36,7 @@ const Bookmarks = () => {
   return (
     <div className="w-[50%] border-l border-r border-gray-200 bg-gray-100 
       shadow-[inset_8px_8px_16px_#d1d5db,inset_-8px_-8px_16px_#ffffff] rounded-2xl 
-      max-h-[90vh] overflow-y-scroll scrollbar-hide">
+      max-h-[90vh] overflow-y-scroll [&::-webkit-scrollbar]:hidden">
 
       <div className="p-4 border-b border-gray-300">
         <h2 className="text-lg font-semibold">Bookmarked Posts</h2>
