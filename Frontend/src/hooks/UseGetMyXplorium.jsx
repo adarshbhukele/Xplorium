@@ -25,7 +25,7 @@ const useGetMyXplorium = (id) => {
     //         fetchMyXplorium();
     // }, [isActive, refresh]);
     useEffect(() => {
-    if (!id) return; // 🔑 don’t fire until id is available
+    if (!id) return; 
     fetchMyXplorium();
   }, [id, isActive, refresh]);
 
