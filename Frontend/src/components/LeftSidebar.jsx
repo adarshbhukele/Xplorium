@@ -80,6 +80,14 @@
               <h1 className="font-semibold text-base ml-3">Bookmarks</h1>
             </Link>
 
+            <Link
+              to="/bookmarks"
+              className="flex items-center px-5 py-3  rounded-2xl bg-white shadow-md border border-gray-100 hover:bg-voilet-50 hover:shadow-lg transition-all duration-200 cursor-pointer"
+            >
+              <img src="../chatbot.png" size="10px" className="text-[#FF0069] h-6" />
+              <h1 className="font-semibold text-base ml-3">AI Chatbot</h1>
+            </Link>
+
             <div
               onClick={logoutHandler}
               className="flex items-center px-5 py-3 rounded-2xl bg-white shadow-md border border-gray-100 hover:bg-orange-50 hover:shadow-lg transition-all duration-200 cursor-pointer"
